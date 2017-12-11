@@ -28,7 +28,6 @@ export default ({ config, db }) => {
 
   api.post('/add', authenticate, (req, res) => {
     let newTrip = new Trip({
-            email: req.body.email,
             country: req.body.country,
             city: req.body.city,
             startdate: req.body.startdate,
@@ -44,7 +43,7 @@ export default ({ config, db }) => {
       res.status(201).json({
                 message: 'trip details saved successfully',
                 success: true,
-                obj: result
+                obj: trip
             });
     });
   });

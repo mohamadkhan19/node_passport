@@ -71,8 +71,11 @@ export default ({ config, db }) => {
 
   // '/v1/user/logout'
   api.get('/logout', authenticate, (req, res) => {
-    res.logout();
-    res.status(200).send('Successfully logged out');
+    req.logout();
+    res.status(200).json({
+              message: 'Successfully logged out',
+              success: true
+            });
   });
 
   api.get('/me', authenticate, (req, res) => {

@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const tripSchema = new Schema({
-	email: {type: String, required: true},
     country: {type: String, required: true},
     city: {type: String, required: true},
     startdate: {type: Date, required: true},
