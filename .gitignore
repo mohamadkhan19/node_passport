@@ -12,3 +12,4 @@ dump/
 coverage
 *.orig
 .env
+package-lock.json
