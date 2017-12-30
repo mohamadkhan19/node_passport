@@ -5,6 +5,7 @@ import config from '../config';
 export default ({ config, db }) => {
   let api = Router();
 
+  // v1/schedule
   api.get('/', (req, res) => {
     let cart= [];
     cart = [{

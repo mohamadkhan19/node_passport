@@ -26,7 +26,7 @@ export default ({ config, db }) => {
           success: false
         });
       }
-      // else {
+       else {
         User.register(new User({ name: req.body.name, username: req.body.email }), req.body.password, function(err, user) {
           if(err) {
             res.status(500).json({ 
@@ -42,7 +42,7 @@ export default ({ config, db }) => {
             });
           });
         });
-      // }
+       }
     });
   });
 
