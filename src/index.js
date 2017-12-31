@@ -2,6 +2,7 @@ import http from 'http';
 import express from 'express';
 import bodyParser from 'body-parser';
 import passport from 'passport';
+import cors from 'cors';
 const LocalStrategy  = require('passport-local').Strategy;
 
 import config from './config';
@@ -9,6 +10,7 @@ import routes from './routes';
 
 let app = express();
 app.server = http.createServer(app);
+app.use(cors());
 
 //middleware
 //parse application/json
