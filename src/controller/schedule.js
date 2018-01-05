@@ -36,87 +36,78 @@ export default ({ config, db }) => {
 
         //Algorithm
 
-		var publicConfig = {
-  			key: 'AIzaSyBGkSkVCbON1Cn7LMgsz2Fm-N3r6kHH5rY',
-  			stagger_time:       1000, // for elevationPath
-  			encode_polylines:   false,
-  			secure:             true, // use https
-  			//proxy:              'http://127.0.0.1:9999' // optional, set a proxy for HTTP requests
-		};
-		var gmAPI = new GoogleMapsAPI(publicConfig);
-
-		var distance = [];
-		for (var i = 0; i < cart.length; ++i) {
-			distance[i] = [];
-			for (var j = 0; j < cart.length; ++j)
-				distance[i][j] = 0;
-		}
-
-	  	for (var i = 0; i < cart.length; i++) {
-			for (var j = 0; j < cart.length; j++) {
-      			var params = {
-      		 		origins: cart[i]['name'],
-      	    		destinations: cart[j]['name'],
-      	    		mode: 'driving'
-      			};
-				var vi = i, vj = j;
-      			gmAPI.distance(params, function(err, result){
-					console.log(result);
-					//console.log(err);
-					distance[vi][vj] = result['rows'][0]['elements'][0]['duration']['value'];
-					console.log(distance[vi][vj]);
-      			});
-	  		}
-		}
-		//sleep(5000);
-		console.log(distance);
+	var publicConfig = {
+  		key: 'AIzaSyBGkSkVCbON1Cn7LMgsz2Fm-N3r6kHH5rY',
+  		stagger_time:       1000, // for elevationPath
+  		encode_polylines:   false,
+  		secure:             true, // use https
+	};
 		
 
-		// generate all permutations
-		var best_perm = [], best_dist = -1;
-		var fact = [];
-		fact[0] = 1;
-		for (var i = 1; i <= cart.length; i++) {
-			fact[i] = fact[i-1] * i;			
-		}
-		for (var i = 0; i < fact[cart.length]; i++) {
-			var perm = [];
-			var val  = i;
-			var taken = [];
-			for (var j = 0; j < cart.length; j++) {
-				var pos = ~~(val/fact[cart.length - j - 1]);
-				val = val % fact[cart.length - j - 1];
-				var digit = 0;
-				for (var k = 0; k < cart.length; k++)
-					if (!taken[k]) {
-						if (pos == 0){
-							taken[k] = 1;
-							digit = k;						
-						}
-						pos--;
-					}
-				perm[j] = digit;
-			}
+	var distance = [];
+	for (var i = 0; i < cart.length; ++i) {
+		distance[i] = [];
+		for (var j = 0; j < cart.length; ++j)
+			distance[i][j] = 0;
+	}
 
-			// Compute distance cost
-			var total_dist = 0;
-			for (var j = 0; j < cart.length - 1; j++){
-				console.log(total_dist);
-				total_dist += distance[perm[j]][perm[j+1]];			
-			}
-			if (best_dist == -1 || total_dist <= best_dist) {
-				best_dist = total_dist;
-				best_perm = perm;			
-			}
-		//	console.log(perm);
-		//	console.log(total_dist);
+	for (var i = 0; i < cart.length; i++) {
+		for (var j = 0; j < cart.length; j++) {
+      			var params = {
+      		 		origins: cart[i]['name'],
+      	    			destinations: cart[j]['name'],
+      	    			mode: 'driving'
+      			};
+			var vi = i, vj = j;
+			var gmAPI = new GoogleMapsAPI(publicConfig);
+      			gmAPI.distance(params, function(err, result){
+				distance[vi][vj] = result['rows'][0]['elements'][0]['duration']['value'];
+      			});
+			sleep(500);
+	  	}
+	}
+		
+	console.log(distance);
+		
+	// generate all permutations
+	var best_perm = [], best_dist = -1;
+	var fact = [];
+	fact[0] = 1;
+	for (var i = 1; i <= cart.length; i++) {
+		fact[i] = fact[i-1] * i;			
+	}
+	for (var i = 0; i < fact[cart.length]; i++) {
+		var perm = [];
+		var val  = i;
+		var taken = [];
+		for (var j = 0; j < cart.length; j++) {
+			var pos = ~~(val/fact[cart.length - j - 1]);
+			val = val % fact[cart.length - j - 1];
+			var digit = 0;
+			for (var k = 0; k < cart.length; k++)
+				if (!taken[k]) {
+					if (pos == 0){
+						taken[k] = 1;
+						digit = k;						
+					}
+					pos--;
+				}
+			perm[j] = digit;
 		}
-		console.log("!!!!!!!!!!!!");
-		console.log(best_dist);
-		console.log(best_perm);
-		var final_cart = [];
-		for (var i = 0; i < cart.length; i++)
-			final_cart[i] = cart[best_perm[i]];
+
+		// Compute distance cost
+		var total_dist = 0;
+		for (var j = 0; j < cart.length - 1; j++){
+			total_dist += distance[perm[j]][perm[j+1]];			
+		}
+		if (best_dist == -1 || total_dist <= best_dist) {
+			best_dist = total_dist;
+			best_perm = perm;			
+		}
+	}
+	var final_cart = [];
+	for (var i = 0; i < cart.length; i++)
+		final_cart[i] = cart[best_perm[i]];
         res.send(final_cart);
   });
 
