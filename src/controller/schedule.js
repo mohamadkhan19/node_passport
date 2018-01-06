@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
 import config from '../config';
+import GoogleMapsAPI from 'googlemaps';
+import sleep from 'system-sleep';
 
-var GoogleMapsAPI = require('../../node_modules/googlemaps/lib/index');
 var gmAPI;
-var sleep = require('system-sleep');
 
 export default ({ config, db }) => {
   let api = Router();
@@ -63,7 +63,7 @@ export default ({ config, db }) => {
       			gmAPI.distance(params, function(err, result){
 				distance[vi][vj] = result['rows'][0]['elements'][0]['duration']['value'];
       			});
-			sleep(500);
+			sleep(750);
 	  	}
 	}
 		
