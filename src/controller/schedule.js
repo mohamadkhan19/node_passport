@@ -4,13 +4,15 @@ import config from '../config';
 import GoogleMapsAPI from 'googlemaps';
 import sleep from 'system-sleep';
 
+import { generateAccessToken, respond, authenticate } from '../middleware/authMiddleware';
+
 var gmAPI;
 
 export default ({ config, db }) => {
   let api = Router();
 
   // v1/schedule
-  api.post('/', (req, res) => {
+  api.post('/', authenticate , (req, res) => {
     let cart= [];
     cart = req.body.cart;
     // cart = [{
