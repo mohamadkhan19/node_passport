@@ -69,7 +69,7 @@ export default ({ config, db }) => {
       			gmAPI.distance(params, function(err, result){
 				distance[vi][vj] = result['rows'][0]['elements'][0]['duration']['value'];
       			});
-			sleep(750);
+			sleep(500);
 	  	}
 	}
 	var hotel_to_location = [];
