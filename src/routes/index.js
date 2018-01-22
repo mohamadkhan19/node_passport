@@ -5,8 +5,10 @@ import initalizeDb from '../db';
 import user from '../controller/user';
 import trip from '../controller/trip';
 import schedule from '../controller/schedule';
+import passport from 'passport'
 
 let router = express();
+
 
 //connect to db
 initalizeDb(db => {
@@ -15,9 +17,11 @@ initalizeDb(db => {
   router.use(middleware({ config, db }));
 
   //api routes v1 (/v1)
+  //router.use('/auth', auth(app, passport));
   router.use('/user', user({ config, db }));
   router.use('/trip', trip({ config, db }));
   router.use('/schedule', schedule({ config, db }));
+  
 });
 
 export default router;
