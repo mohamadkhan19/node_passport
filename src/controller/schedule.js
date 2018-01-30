@@ -7,6 +7,7 @@ import sleep from 'system-sleep';
 import { generateAccessToken, respond, authenticate } from '../middleware/authMiddleware';
 
 var gmAPI;
+var rand = require('random-seed');
 
 export default ({ config, db }) => {
   let api = Router();
@@ -14,28 +15,28 @@ export default ({ config, db }) => {
   // v1/schedule
   api.post('/', authenticate , (req, res) => {
     let cart= [];
-    cart = req.body.cart;
-    // cart = [{
-    //     "name": "Baker Beach",
-    //     "Latitude": 37.791032,
-    //     "Longitude": -122.5096298,
-    //     "AverageTime": 120,
-    //     "StartTime": 10,
-    //     "EndTime": 17},
-    //   {
-    //     "name": "Lombard Street",
-    //     "Latitude": 37.7918949,
-    //     "Longitude": -122.4623753,
-    //     "AverageTime": 120,
-    //     "StartTime": 8,
-    //     "EndTime": 17},
-    //   {
-    //     "name": "Treasure Island, San Francisco",
-    //     "Latitude": 37.8201814,
-    //     "Longitude": -122.3864967,
-    //     "AverageTime": 120,
-    //     "StartTime": 9,
-    //     "EndTime": 23}]
+    //cart = req.body.cart;
+     cart = [{
+         "name": "Baker Beach",
+         "Latitude": 37.791032,
+         "Longitude": -122.5096298,
+         "AverageTime": 120,
+         "StartTime": 10,
+         "EndTime": 17},
+       {
+         "name": "Lombard Street",
+         "Latitude": 37.7918949,
+         "Longitude": -122.4623753,
+         "AverageTime": 120,
+         "StartTime": 8,
+         "EndTime": 17},
+       {
+         "name": "Treasure Island, San Francisco",
+         "Latitude": 37.8201814,
+         "Longitude": -122.3864967,
+         "AverageTime": 120,
+         "StartTime": 9,
+         "EndTime": 23}]
    var hotel = req.body.hotel;
 
         //Algorithm
@@ -113,7 +114,7 @@ export default ({ config, db }) => {
 		fact[i] = fact[i-1] * i;			
 	}
 	// enumerate from 1 to (cart.legnth!) to genereate permutations.
-	for (var i = 0; i < fact[cart.length]; i++) {
+	/*for (var i = 0; i < fact[cart.length]; i++) {
 		var perm = [];
 		var val  = i;
 		var taken = [];
@@ -130,8 +131,22 @@ export default ({ config, db }) => {
 					pos--;
 				}
 			perm[j] = digit;
+		}*/
+	// instead of enumerate all permutations, we generate several random permutations.
+	var total_perm = 100000;
+	var seed = 'my secret string value';
+	var rand = gen.create(seed);
+	for (var i = 0; i< total_perm; i++) {
+		for (var j = 0; j < cart.length; j++) {
+			perm[j] = j;
 		}
-
+		for (var j = 0; j < cart.length * cart.length; j++) {
+			var a = gen.intBetween(0, cart.length - 1);
+			var b = gen.intBetween(0, cart.length - 1);
+			var tmp = perm[a];
+			perm[a] = perm[b];
+			perm[b] = tmp;
+		}
 		// Compute distance cost
 
 		var total_dist = 0;
