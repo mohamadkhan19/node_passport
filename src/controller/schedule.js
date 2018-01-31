@@ -7,16 +7,15 @@ import sleep from 'system-sleep';
 import { generateAccessToken, respond, authenticate } from '../middleware/authMiddleware';
 
 var gmAPI;
-var rand = require('random-seed');
+var gen = require('random-seed');
 
 export default ({ config, db }) => {
   let api = Router();
-
   // v1/schedule
-  api.post('/', authenticate , (req, res) => {
+  api.post('/' , authenticate, (req, res) => {
     let cart= [];
-    //cart = req.body.cart;
-     cart = [{
+    cart = req.body.cart;
+   /*  cart = [{
          "name": "Baker Beach",
          "Latitude": 37.791032,
          "Longitude": -122.5096298,
@@ -36,9 +35,8 @@ export default ({ config, db }) => {
          "Longitude": -122.3864967,
          "AverageTime": 120,
          "StartTime": 9,
-         "EndTime": 23}]
+         "EndTime": 23}]*/
    var hotel = req.body.hotel;
-
         //Algorithm
 
 	var publicConfig = {
@@ -47,7 +45,6 @@ export default ({ config, db }) => {
   		encode_polylines:   false,
   		secure:             true, // use https
 	};
-		
 	// Initialize distance to 0.
 	var distance = [];
 	for (var i = 0; i < cart.length; ++i) {
@@ -55,7 +52,6 @@ export default ({ config, db }) => {
 		for (var j = 0; j < cart.length; ++j)
 			distance[i][j] = 0;
 	}
-
     //	Getting the distance between every pair of locations through map api.
     //  Stored into the distance 2D array. 
 	for (var i = 0; i < cart.length; i++) {
@@ -105,7 +101,7 @@ export default ({ config, db }) => {
 	console.log(location_to_hotel);
 	console.log(hotel_to_location);
 		
-	// generate all permutations
+	// fgenerate all permutations
 	var best_perm = [], best_dist = -1;
 	// Initialize factorial arrary. fact[i] = i!.
 	var fact = [];
@@ -133,16 +129,17 @@ export default ({ config, db }) => {
 			perm[j] = digit;
 		}*/
 	// instead of enumerate all permutations, we generate several random permutations.
-	var total_perm = 100000;
+	var total_perm = 1000;
 	var seed = 'my secret string value';
 	var rand = gen.create(seed);
 	for (var i = 0; i< total_perm; i++) {
+		var perm = [];
 		for (var j = 0; j < cart.length; j++) {
 			perm[j] = j;
 		}
 		for (var j = 0; j < cart.length * cart.length; j++) {
-			var a = gen.intBetween(0, cart.length - 1);
-			var b = gen.intBetween(0, cart.length - 1);
+			var a = rand.intBetween(0, cart.length - 1);
+			var b = rand.intBetween(0, cart.length - 1);
 			var tmp = perm[a];
 			perm[a] = perm[b];
 			perm[b] = tmp;
@@ -155,7 +152,6 @@ export default ({ config, db }) => {
 		// loop through each locations in the order of visit;
 		for (var j = 0; j < cart.length - 1; j++){
 			total_dist += distance[perm[j]][perm[j+1]];
-			console.log(current_time);
 			current_time += ~~(distance[perm[j]][perm[j+1]]/60);
 			if (current_time < cart[perm[j]]['StartTime']*60) is_valid = false;
 			current_time += cart[perm[j]]['AverageTime'];
