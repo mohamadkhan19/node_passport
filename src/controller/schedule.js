@@ -5,7 +5,8 @@ import GoogleMapsAPI from 'googlemaps';
 import sleep from 'system-sleep';
 
 import { generateAccessToken, respond, authenticate } from '../middleware/authMiddleware';
-
+//my key AIzaSyDWpwowZwOG20YYHpmuCSj6GgWU60NWeio
+//tim key AIzaSyBGkSkVCbON1Cn7LMgsz2Fm-N3r6kHH5rY
 var gmAPI;
 var gen = require('random-seed');
 
@@ -40,7 +41,7 @@ export default ({ config, db }) => {
         //Algorithm
 
 	var publicConfig = {
-  		key: 'AIzaSyBGkSkVCbON1Cn7LMgsz2Fm-N3r6kHH5rY',
+  		key: 'AIzaSyDWpwowZwOG20YYHpmuCSj6GgWU60NWeio',
   		stagger_time:       1000, // for elevationPath
   		encode_polylines:   false,
   		secure:             true, // use https
@@ -66,7 +67,7 @@ export default ({ config, db }) => {
       			gmAPI.distance(params, function(err, result){
 				distance[vi][vj] = result['rows'][0]['elements'][0]['duration']['value'];
       			});
-			sleep(500);
+			sleep(300);
 	  	}
 	}
 	var hotel_to_location = [];
@@ -82,7 +83,7 @@ export default ({ config, db }) => {
       		gmAPI.distance(params, function(err, result){
 			hotel_to_location[vi] = result['rows'][0]['elements'][0]['duration']['value'];
       		});
-		sleep(750);
+		sleep(300);
 
 		var params = {
       		origins: cart[i]['name'],
@@ -94,7 +95,7 @@ export default ({ config, db }) => {
       		gmAPI.distance(params, function(err, result){
 			location_to_hotel[vi] = result['rows'][0]['elements'][0]['duration']['value'];
       		});
-		sleep(750);
+		sleep(300);
 	}
 		
 	console.log(distance);
