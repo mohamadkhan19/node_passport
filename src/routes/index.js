@@ -6,6 +6,7 @@ import user from '../controller/user';
 import trip from '../controller/trip';
 import schedule from '../controller/schedule';
 import passport from 'passport'
+import yelp from '../controller/yelp'
 
 let router = express();
 
@@ -21,6 +22,7 @@ initalizeDb(db => {
   router.use('/user', user({ config, db }));
   router.use('/trip', trip({ config, db }));
   router.use('/schedule', schedule({ config, db }));
+  router.use('/yelp', yelp({ config, db}));
   
 });
 
