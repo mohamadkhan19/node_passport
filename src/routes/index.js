@@ -8,6 +8,7 @@ import schedule from '../controller/schedule';
 import passport from 'passport';
 import yelp from '../controller/yelp';
 import blog from '../controller/blog';
+import city from '../controller/city';
 
 let router = express();
 
@@ -25,6 +26,7 @@ initalizeDb(db => {
   router.use('/schedule', schedule({ config, db }));
   router.use('/yelp', yelp({ config, db }));
   router.use('/blog', blog({ config, db }));
+  router.use('/city', city({ config, db}));
   
 });
 
