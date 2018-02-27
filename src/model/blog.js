@@ -1,0 +1,14 @@
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
+
+const blogSchema = new Schema({
+    country: {type: String, required: true},
+    city: {type: String, required: true},
+    startdate: {type: Date, required: true},
+    enddate: {type: Date, required: true},
+    count: {type: String, required: true},
+    cart: {type: Array, required: true}
+});
+
+
+module.exports = mongoose.model('Blog', blogSchema, 'blogs');
