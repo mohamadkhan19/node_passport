@@ -18,6 +18,19 @@ export default () => {
     });
   });
   
+  api.get('/:id', authenticate, (req, res) => {
+    City.find({"country_id":req.params.id}, (err, city) => {
+      if (err) {
+        return res.status(401).json({
+                message: 'Not Authenticated',
+                success: false,
+                error: err
+            });
+      }
+      res.json(city);
+    });
+  });
+  
   api.post('/', function (req, res) {
     Country.findOne({"name":req.body.country}, function (err, country) {
         if (err) {
