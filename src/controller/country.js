@@ -1,12 +1,12 @@
 import { Router } from 'express';
+import bodyParser from 'body-parser';
 import { authenticate } from '../middleware/authMiddleware';
-import City from '../model/city';
-import Country from '../model/country'
+import Country from '../model/country';
 
 export default () => {
   let api = Router();
   api.get('/', authenticate, (req, res) => {
-    City.find({}, (err, city) => {
+    Country.find({}, (err, result) => {
       if (err) {
         return res.status(401).json({
                 message: 'Not Authenticated',
@@ -14,43 +14,32 @@ export default () => {
                 error: err
             });
       }
-      res.json(city);
+      res.json(result);
     });
   });
   
-  api.post('/', function (req, res) {
-    Country.findOne({"name":req.body.country}, function (err, country) {
-        if (err) {
-            return res.status(500).json({
-                title: 'An error occurred',
+  api.post('/', authenticate, (req,res) => {
+    var country = new Country({
+      name: req.body.name,
+      imageUrl: req.body.imageUrl
+    })
+    country.save( (err,result) => {
+      if (err) {
+        return res.status(401).json({
+                message: 'Not Authenticated',
+                success: false,
                 error: err
             });
-        }
-        var city = new City({
-            name: req.body.name,
-            imageUrl: req.body.imageUrl,
-            country_id: country._id
-        });
-        city.save(function (err, result) {
-            if (err) {
-                return res.status(500).json({
-                    title: 'An error occurred',
-                    error: err
-                });
-            }
-            country.cities_id.push(result);
-            country.save();
-            res.status(201).json({
-                message: 'Saved!',
-                success: 1,
-                obj: result
-            });
-        });
-    });
-});
+      }
+      res.json({
+        "success": true,
+        "obj": result
+      })
+    })
+  })
   
   api.patch('/:id', (req, res) => {
-    City.findById(req.params.id, (err, result) => {
+    Country.findById(req.params.id, (err, result) => {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
@@ -79,20 +68,20 @@ export default () => {
     });
 });
 
-api.delete('/:id',  (req, res) => {
-    City.findById(req.params.id, (err, city) => {
+api.delete('/:id', (req, res) => {
+    Country.findById(req.params.id, (err, result) => {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
                 error: err
             });
         }
-        if (!city) {
+        if (!result) {
             return res.status(500).json({
-                title: 'No city Found!'
+                title: 'No result Found!'
             });
         }
-        city.remove( (err, result) => {
+        result.remove( (err, result) => {
             if (err) {
                 return res.status(500).json({
                     title: 'An error occurred',
