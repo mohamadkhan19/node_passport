@@ -8,12 +8,11 @@ export default () => {
   api.get('/', authenticate, (req, res) => {
     City.find({}, (err, city) => {
       if (err) {
-        return res.status(401).json({
-                message: 'Not Authenticated',
-                success: false,
+            return res.status(500).json({
+                title: 'An error occurred',
                 error: err
             });
-      }
+        }
       res.json(city);
     });
   });
