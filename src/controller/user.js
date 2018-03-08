@@ -8,7 +8,7 @@ import UserDataExt from './extensions/userData-ext';
 
 import { generateAccessToken, respond, authenticate } from '../middleware/authMiddleware';
 
-export default ({ config, db }) => {
+export default () => {
   let api = Router();
 
   // '/v1/user/register'
@@ -26,7 +26,7 @@ export default ({ config, db }) => {
           success: false
         });
       }
-       else {
+      // else {
         User.register(new User({ name: req.body.name, username: req.body.email }), req.body.password, function(err, user) {
           if(err) {
             res.status(500).json({ 
@@ -42,7 +42,7 @@ export default ({ config, db }) => {
             });
           });
         });
-       }
+      // }
     });
   });
 
@@ -71,11 +71,8 @@ export default ({ config, db }) => {
 
   // '/v1/user/logout'
   api.get('/logout', authenticate, (req, res) => {
-    req.logout();
-    res.status(200).json({
-              message: 'Successfully logged out',
-              success: true
-            });
+    res.logout();
+    res.status(200).send('Successfully logged out');
   });
 
   api.get('/me', authenticate, (req, res) => {

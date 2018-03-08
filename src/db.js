@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import mongodb from 'mongodb';
 import config from './config';
 
 export default callback => {

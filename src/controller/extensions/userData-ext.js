@@ -4,7 +4,7 @@ import UserData from '../../model/user';
 class UserDataExt {
 
   static findUserByEmail(email, callback) {
-    UserData.findOne({ 'username': email }, (err, userData) => {
+    UserData.findOne({ 'email': email }, (err, userData) => {
       if (err) {
         return callback(err, null);
       } else{
